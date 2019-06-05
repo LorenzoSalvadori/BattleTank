@@ -2,6 +2,7 @@
 
 
 #include "TankAIController.h"
+#include "Engine/World.h"
 
 void ATankAIController::BeginPlay()
 {
@@ -15,9 +16,26 @@ void ATankAIController::BeginPlay()
 	{
 		UE_LOG(LogTemp, Warning, TEXT("%s possessed by AI."), *ControlledTank->GetName());
 	}
+
+	ATank* PlayerTank = GetPlayerTank();
+	if (!PlayerTank)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("No player to aim at."));
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Aiming at player %s."), *PlayerTank->GetName());
+	}
 }
 
 ATank* ATankAIController::GetControlledTank() const
 {
 	return Cast<ATank>(GetPawn());
+}
+
+ATank* ATankAIController::GetPlayerTank() const 
+{
+	APawn* PlayerPawn = GetWorld()->GetFirstPlayerController()->GetPawn();
+	if (!PlayerPawn) { return nullptr; }
+	return Cast<ATank>(PlayerPawn);
 }
